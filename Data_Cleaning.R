@@ -38,3 +38,9 @@ groupyear<-merge(gtd2,gtd4, by=c("gname","iyear"))
 
 ##Change year format and merge with BAAD
 groupyear$year<-substr(groupyear$iyear,1,4)%>%as.numeric()
+
+data<-merge(BAAD2_Insurgency_Crime_Dataset,groupyear, by.x=c("org","year"), by.y=c("gname", "year"))
+
+##Write Clean data in new .csv
+
+write.csv(data,"BAADxGTD.csv")
