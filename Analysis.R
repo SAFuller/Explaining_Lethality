@@ -1,3 +1,12 @@
+
+##Read data
+library(readr)
+library(stargazer)
+library(pscl)
+library(MASS)
+EDTG <- read_csv("powerorprogress.csv")
+
+
 ##Prelim
 
 pois<-glm(nonterr_casualties~pch+sq+tch, family = "poisson", data=EDTG)
@@ -45,17 +54,26 @@ summary(hierCont)
 
 stargazer(poisful,nbfull)
 
-
+summary(EDTG$sq)
 
 
 ##ZINB
-m1 <- zeroinfl(nonterr_casualties ~ pch+tch+lead_hierarch+total_atks 
-               | v2x_freexp_altinf+v2x_frassoc_thick ,
-               data = data2, dist = "negbin", EM = TRUE)
+m1 <- zeroinfl(nonterr_casualties ~ pch+tch+lead_hierarch+total_atks+duration
+               | v2x_libdem+ pop ,
+               data = EDTG, dist = "negbin", EM = TRUE)
 summary(m1)
 
-m2 <- zeroinfl(nonterr_casualties ~ policy+policyH+territory+territoryH+squo+squoH+system+
-                 lead_hierarch+total_atks 
-               | tpop+cinc+v2x_freexp_altinf+v2x_frassoc_thick ,
-               data = data2 , dist = "negbin", EM = TRUE)
+m2 <- zeroinfl(nonterr_casualties ~ policy+policyH+territory+territoryH+system+lead_hierarch++total_atks+diversity 
+               | v2x_libdem ,
+               data = EDTG , dist = "negbin", EM = TRUE)
 summary(m2)
+
+m3 <- zeroinfl(nonterr_casualties ~ pch*lead_hierarch+tch*lead_hierarch+lead_hierarch+total_atks+diversity
+               | v2x_libdem ,
+               data = EDTG, dist = "negbin", EM = TRUE)
+summary(m3)
+
+m4 <- zeroinfl(nonterr_casualties ~ pch+tch+lead_hierarch+total_atks+duration+nat+rel+diversity+shr_trans+terrctrl+public_service+num_rivals
+               | v2x_libdem ,
+               data = EDTG, dist = "negbin", EM = TRUE)
+summary(m4)
